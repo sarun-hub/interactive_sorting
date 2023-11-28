@@ -1,19 +1,12 @@
 import string
 import numpy as np
 
-class Pair:
-    def __init__(self, indice, operator):
-        self.indice = indice
-        self.operator = operator
-
 print("Enter Values: ")
 N,Q = map(int, input().split())
 alphabet = list(string.ascii_uppercase)
 
 alphabet = alphabet[:N]
-print(alphabet)
 points = [0]*N
-print(points)
 answer = []
 leverage = 0 
 
@@ -33,19 +26,20 @@ def checkOperator(point_list, operator, indice, seen):
         print("input is not operator.")
 
 seen = dict()
-
-for i in range(Q):
+i = 0
+while i < Q:
     if i == 0 : 
         print(f"? {alphabet[i]} {alphabet[i+1]}")
         indice = [0,1]
         operator = input()
+        i += 1
     elif allUnique(points):
         result_index = np.argsort(points).tolist()
         break 
     else:
         min_point = min(points)
         indice = [j for j in range(N) if points[j] == min_point+leverage]
-        if len(indice) == 1:
+        while len(indice) <= 1:
             leverage +=1
             indice = [j for j in range(len(points)) if points[j] == min_point+leverage]
         if tuple([indice[0],indice[1]]) in seen:
@@ -54,11 +48,12 @@ for i in range(Q):
         else:
             print(f"? {alphabet[indice[0]]} {alphabet[indice[1]]}")
             operator = input()
-        
+            i += 1    
     checkOperator(points,operator,indice,seen)
     if not(tuple([indice[0],indice[1]]) in seen): 
         seen[tuple([indice[0],indice[1]])] = operator
-    
+
+result_index = np.argsort(points).tolist()
 sorted_list = [alphabet[index] for index in result_index]
 
 print(f"! {''.join(sorted_list)}")
